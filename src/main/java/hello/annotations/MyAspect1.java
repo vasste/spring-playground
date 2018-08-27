@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
  * @since 20.06.2018
  */
 @Aspect
-@Component
 public class MyAspect1 {
 
     @Pointcut("@annotation(hello.annotations.AspectAnnotation)")

@@ -31,10 +31,11 @@
         <property name="dataSource" ref="dbPool"/>
     </bean>
 
-    <context:component-scan base-package="hello"/>
     <context:spring-configured/>
     <context:annotation-config/>
-    <context:load-time-weaver/>
+
+    <context:component-scan base-package="hello"/>
+    <!--<context:load-time-weaver/>-->
     <tx:annotation-driven transaction-manager="txManager" mode="aspectj"/>
     <!--<tx:annotation-driven mode="aspectj"/>-->
 </beans>

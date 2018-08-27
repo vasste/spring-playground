@@ -39,6 +39,8 @@ dependencies {
 }
 
 def aspectj = { destDir, aspectPath, inpath, classpath ->
+    println(inpath)
+    println(classpath)
     ant.taskdef(resource: "org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties",
             classpath: configurations.ajc.asPath)
 

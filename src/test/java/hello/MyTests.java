@@ -23,6 +23,6 @@ public class MyTests {
 
     @Test
     public void name() {
-        bean.add(Arrays.asList(new Foo(45)));
+        bean.save();
     }
 }

@@ -2,6 +2,6 @@
         "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
 <aspectj>
     <weaver options="-verbose -showWeaveInfo">
-        <include within="*" />
+        <aspect name="hello.annotations.MyAspect1"/>
     </weaver>
 </aspectj>
