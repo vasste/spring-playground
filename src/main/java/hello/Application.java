@@ -2,10 +2,16 @@ package hello;
 
 import com.devexperts.rmi.RMIEndpoint;
 import com.devexperts.rmi.RMIServer;
+import com.devexperts.rmi.RMIServiceInterface;
+import org.reflections.Reflections;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 import java.util.Collections;
 
@@ -30,15 +36,16 @@ public class Application implements ApplicationContextAware {
         return CONTEXT.getBean(beanClass);
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, ClassNotFoundException {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("application-context.xml");
 
         RMIEndpoint ENDPOINT = RMIEndpoint.createEndpoint(RMIEndpoint.Side.SERVER);
         RMIServer rmiServer = ENDPOINT.getServer();
-        rmiServer.export(ctx.getBean(TestBean.class), TestBean.class);
-
-        ctx.getBean(TestBean.class).add(Collections.emptyList());
-
+        Reflections ref = new Reflections("hello");
+        for (Class clazz : ref.getTypesAnnotatedWith(RMIServiceInterface.class)) {
+            if (clazz.isInterface())
+                rmiServer.export(ctx.getBean(clazz), clazz);
+        }
         ENDPOINT.connect(":11555");
         Thread.sleep(Long.MAX_VALUE);
     }

@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'idea'
 
 configurations {
     ajc
@@ -33,14 +34,13 @@ dependencies {
 
     implementation group: 'com.h2database', name: 'h2', version: '1.4.197'
     implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.5.0'
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.10'
 
     testCompile group: 'org.springframework', name: 'spring-test', version: '4.3.18.RELEASE'
     testCompile "junit:junit:4.12"
 }
 
 def aspectj = { destDir, aspectPath, inpath, classpath ->
-    println(inpath)
-    println(classpath)
     ant.taskdef(resource: "org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties",
             classpath: configurations.ajc.asPath)
 
@@ -72,6 +72,14 @@ compileTestJava {
                 configurations.aspects.asPath,
                 project.sourceSets.test.output.classesDir.absolutePath,
                 project.sourceSets.test.runtimeClasspath.asPath
+    }
+}
+
+idea{
+    module{
+        inheritOutputDirs = false
+        outputDir = compileJava.destinationDir
+        testOutputDir = compileTestJava.destinationDir
     }
 }
 
