@@ -1,3 +1,5 @@
+package hello;
+
 import com.devexperts.rmi.RMIClient;
 import com.devexperts.rmi.RMIEndpoint;
 import com.devexperts.rmi.RMIOperation;
@@ -8,18 +10,16 @@ import com.devexperts.rmi.security.SecurityContext;
 import com.dxfeed.promise.Promise;
 import com.dxfeed.promise.PromiseHandler;
 import hello.Foo;
-import hello.ServerClient;
 import hello.TestBean;
 
 import java.rmi.RemoteException;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Vasilii Stepanov.
  * @since 27.02.2018
  */
-public class RmiClient {
+public class RmiNioClient {
     public static void main(String[] args) throws RemoteException, NoSuchMethodException, InterruptedException {
         RMIEndpoint endpoint = RMIEndpoint.createEndpoint(RMIEndpoint.Side.CLIENT);
         SecurityContext.getInstance().setSubject("test2");

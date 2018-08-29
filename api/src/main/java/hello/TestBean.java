@@ -12,6 +12,8 @@ import java.util.List;
 @RMIServiceInterface
 public interface TestBean extends RMIChannelSupport {
     void add(List<Foo> foos);
+
     List<Foo> read();
+
     void save();
 }

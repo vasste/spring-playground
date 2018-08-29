@@ -1,85 +1,20 @@
-apply plugin: 'java'
-apply plugin: 'idea'
+subprojects {
+    apply plugin: 'java'
 
-configurations {
-    ajc
-    aspects
-    implementation {
-        extendsFrom aspects
+    repositories {
+        mavenCentral()
+        maven { url "https://dl.bintray.com/dxfeed/Maven" }
+        mavenLocal()
     }
-}
 
-repositories {
-    mavenCentral()
-    maven { url "https://dl.bintray.com/dxfeed/Maven" }
-    mavenLocal()
-}
+    dependencies {
+        implementation "com.devexperts.qd:qds:3.255"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-
-    implementation "com.devexperts.qd:qds:3.255"
-
-    implementation "org.springframework:spring-context:4.3.18.RELEASE"
-    implementation "org.springframework:spring-tx:4.3.18.RELEASE"
-    implementation "org.springframework:spring-jdbc:4.3.18.RELEASE"
-
-    implementation "org.aspectj:aspectjrt:1.8.13"
-    implementation "org.aspectj:aspectjweaver:1.8.13"
-
-    ajc "org.aspectj:aspectjtools:1.8.13"
-    aspects "org.springframework:spring-aspects:4.3.18.RELEASE"
-
-    implementation group: 'com.h2database', name: 'h2', version: '1.4.197'
-    implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.5.0'
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.10'
-
-    testCompile group: 'org.springframework', name: 'spring-test', version: '4.3.18.RELEASE'
-    testCompile "junit:junit:4.12"
-}
-
-def aspectj = { destDir, aspectPath, inpath, classpath ->
-    ant.taskdef(resource: "org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties",
-            classpath: configurations.ajc.asPath)
-
-    ant.iajc(
-            maxmem: "1024m", fork: "true", Xlint: "ignore",
-            destDir: destDir,
-            aspectPath: aspectPath,
-            inpath: inpath,
-            classpath: classpath,
-            source: project.sourceCompatibility,
-            target: project.targetCompatibility
-    )
-}
-
-compileJava {
-    doLast {
-        aspectj project.sourceSets.main.output.classesDir.absolutePath,
-                configurations.aspects.asPath,
-                project.sourceSets.main.output.classesDir.absolutePath,
-                project.sourceSets.main.runtimeClasspath.asPath
+        testCompile group: 'org.springframework', name: 'spring-test', version: '4.3.18.RELEASE'
+        testCompile "junit:junit:4.12"
     }
-}
 
-compileTestJava {
-    dependsOn jar
-
-    doLast {
-        aspectj project.sourceSets.test.output.classesDir.absolutePath,
-                configurations.aspects.asPath,
-                project.sourceSets.test.output.classesDir.absolutePath,
-                project.sourceSets.test.runtimeClasspath.asPath
-    }
-}
-
-idea{
-    module{
-        inheritOutputDirs = false
-        outputDir = compileJava.destinationDir
-        testOutputDir = compileTestJava.destinationDir
-    }
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
 

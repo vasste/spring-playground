@@ -13,8 +13,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import java.util.Collections;
-
 /**
  * @author Vasilii Stepanov.
  * @since 19.06.2018
