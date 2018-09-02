@@ -1,7 +1,0 @@
-<!DOCTYPE aspectj PUBLIC
-        "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
-<aspectj>
-    <weaver options="-verbose -showWeaveInfo">
-        <aspect name="hello.annotations.MyAspect1"/>
-    </weaver>
-</aspectj>

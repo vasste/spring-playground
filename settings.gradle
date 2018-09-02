@@ -1,4 +1,4 @@
 rootProject.name = 'spring-playground'
 
-include 'server', 'instruments', 'api'
+include 'services:a', 'services:b', 'api', 'rest', 'remote:api', 'remote:impl'
 
