@@ -1,34 +1,60 @@
-subprojects {
+allprojects {
     apply plugin: 'idea'
 
     configurations {
         ajc
         aspects
+        projectJars
         implementation {
             extendsFrom aspects
+            extendsFrom projectJars
         }
     }
 
     dependencies {
-        implementation project(":services")
+        implementation "org.springframework:spring-jdbc:$spring_v"
+        implementation "org.springframework:spring-tx:$spring_v"
+        implementation "org.springframework:spring-context:$spring_v"
+        implementation "org.aspectj:aspectjrt:$aspectj_v"
 
-        implementation "org.springframework:spring-context:4.3.18.RELEASE"
-        implementation "org.springframework:spring-tx:4.3.18.RELEASE"
-        implementation "org.springframework:spring-jdbc:4.3.18.RELEASE"
+        ajc "org.aspectj:aspectjtools:$aspectj_v"
+        aspects "org.springframework:spring-aspects:$spring_v"
 
-        implementation "org.aspectj:aspectjrt:1.8.13"
-        implementation "org.aspectj:aspectjweaver:1.8.13"
-
-        ajc "org.aspectj:aspectjtools:1.8.13"
-        aspects "org.springframework:spring-aspects:4.3.18.RELEASE"
+        compileOnly "org.jetbrains:annotations:$jb_annotations_v"
     }
+
+    def aspectj = { destDir, aspectPath, inpath, classpath ->
+        ant.taskdef(resource: "org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties",
+                classpath: configurations.ajc.asPath)
+
+        ant.iajc(
+                maxmem: "1024m", fork: "true", Xlint: "ignore",
+                destDir: destDir,
+                aspectPath: aspectPath,
+                inpath: inpath,
+                classpath: classpath,
+                source: project.sourceCompatibility,
+                target: project.targetCompatibility
+        )
+    }
+
+    idea {
+        module {
+            inheritOutputDirs = false
+            outputDir = compileJava.destinationDir
+            testOutputDir = compileTestJava.destinationDir
+        }
+    }
+
+    def withoutLocalBuildJars = project.sourceSets.main.runtimeClasspath - configurations.projectJars
 
     compileJava {
         doLast {
+            println(project.sourceSets.main.runtimeClasspath.asPath)
             aspectj project.sourceSets.main.output.classesDir.absolutePath,
                     configurations.aspects.asPath,
                     project.sourceSets.main.output.classesDir.absolutePath,
-                    project.sourceSets.main.runtimeClasspath.asPath
+                    withoutLocalBuildJars.asPath
         }
     }
 
@@ -37,17 +63,9 @@ subprojects {
 
         doLast {
             aspectj project.sourceSets.test.output.classesDir.absolutePath,
-                    configurations.aspects.asPath,
+                    configurations.aspects.asPath + jar.archivePath,
                     project.sourceSets.test.output.classesDir.absolutePath,
-                    project.sourceSets.test.runtimeClasspath.asPath
-        }
-    }
-
-    idea{
-        module{
-            inheritOutputDirs = false
-            outputDir = compileJava.destinationDir
-            testOutputDir = compileTestJava.destinationDir
+                    withoutLocalBuildJars.asPath
         }
     }
 }

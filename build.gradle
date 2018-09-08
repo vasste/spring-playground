@@ -1,5 +1,5 @@
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
 
     repositories {
         mavenCentral()
@@ -9,27 +9,8 @@ subprojects {
 
     dependencies {
         implementation "com.devexperts.qd:qds:3.255"
-
-        testCompile group: 'org.springframework', name: 'spring-test', version: '4.3.18.RELEASE'
-        testCompile "junit:junit:4.12"
     }
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 }
-
-def aspectj = { destDir, aspectPath, inpath, classpath ->
-    ant.taskdef(resource: "org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties",
-            classpath: configurations.ajc.asPath)
-
-    ant.iajc(
-            maxmem: "1024m", fork: "true", Xlint: "ignore",
-            destDir: destDir,
-            aspectPath: aspectPath,
-            inpath: inpath,
-            classpath: classpath,
-            source: project.sourceCompatibility,
-            target: project.targetCompatibility
-    )
-}
-
